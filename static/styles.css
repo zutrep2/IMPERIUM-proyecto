@@ -1,0 +1,243 @@
+body{
+    background-color: rgb(28, 96, 104);
+    background-image: linear-gradient(135deg,rgba(76, 0, 255, 0.89)0%,  rgb(9, 77, 109) 50%, rgb(0, 40, 44) 100%);
+    color: white;
+    overflow-x: hidden;
+    margin: 0;
+    background-repeat: no-repeat;
+
+    background-size: cover; 
+    background-attachment: fixed; 
+    min-height: 100vh;
+}
+
+a{
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    text-transform: capitalize;
+    &:hover {
+        color: rgb(0, 204, 255);
+        transform: scale(1.2);
+        transition-duration: 0.5s;
+    }
+
+}
+
+.header{
+   display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin: 40px;
+    margin-top: 100px;
+
+}
+
+
+.contenedor_header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(12, 255, 121, 0.164);
+    border-radius: 8px;
+
+}
+
+.fondo_header {
+    position: relative;
+    height: 500px;
+
+    background-color: rgba(0, 0, 0, 0.041);
+    width: 100%;
+    max-width: 800px;
+}
+
+.titulo_principal {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 50px;
+    margin-top: 50px;
+    color: rgb(4, 2, 85);
+}
+
+.titulo_principal span {
+    text-transform: capitalize;
+    font-size: 36px;
+
+}
+
+.centrar{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.btn_imperium {
+    padding: 10px 70px;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: rgba(47, 127, 133, 0.616);
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    color: rgb(4, 2, 85);
+    cursor: pointer;
+    box-shadow: 0 5px 7px rgb(35, 3, 175);
+
+    &:hover {
+        background-color: rgb(11, 143, 136) ;
+        transform: scale(1.1);
+        transition-duration: 1.1s;
+        box-shadow: 0 10px 15px rgb(3, 2, 77) ;
+    }
+}
+
+.cont_centrar{
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+}
+
+.cont_login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.login_container{
+    margin: 30px;
+}
+
+.contenedor_login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 20px 30px;
+    background-color: rgba(2, 54, 85, 0.562);
+    border-radius: 8px;
+    box-shadow: 0 10px 15px rgb(2, 39, 61);
+    padding: 30px;
+    width: 350px;
+    max-width: 400px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.titulo{
+    display: flex;
+    text-align: justify;
+    text-transform: uppercase;
+    font-family: consolas;
+    font-size: 30px;
+    margin: 0 auto;
+    color: rgb(7, 141, 112);
+}
+
+.cont_camp{
+    color: rgb(7, 141, 112) ;
+    margin-bottom: 15px;
+    
+}
+.cont_camp label{
+    font-size: 14px;
+    font-family: consolas;
+    margin-bottom: 5px;
+    display: block;
+    color: rgb(19, 133, 117);
+}
+
+.cont_camp input{
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    font-family: consolas;
+    border: solid rgb(7, 141, 112) ;
+    border-radius: 10px;
+    background-color: rgb(5, 94, 136) ;
+    color: rgb(177, 152, 147);
+    box-sizing: border-box;
+    transition: all 0,9s ease;
+}
+
+.btn_entrar{
+    padding: 10px 80px;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: rgba(14, 43, 138, 0.781);
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    color: rgb(7, 141, 112) ;
+    cursor: pointer;
+    box-shadow: 0 5px 7px rgb(7, 141, 112) ;
+
+    &:hover {
+
+        background-color: rgb(7, 141, 112) ;
+        transform: scale(1.1);
+        transition-duration: 0.9s;
+        color: rgb(10, 26, 168);
+        box-shadow: 0 10px 15px rgb(17, 0, 109);
+    }
+}
+
+.cont_signub{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.signup_container{
+    margin: 30px;
+}
+
+.contenedor_signup{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 20px 30px;
+    background-color: rgba(2, 54, 85, 0.562);
+    border-radius: 8px;
+    box-shadow: 0 10px 15px rgb(2, 39, 61);
+    padding: 30px;
+    width: 350px;
+    max-width: 400px;
+    margin: auto;
+    overflow: hidden;
+}
+
+
+.btn_registrarme{
+    padding: 10px 80px;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: rgba(14, 43, 138, 0.781);
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    color: rgb(7, 141, 112) ;
+    cursor: pointer;
+    box-shadow: 0 5px 7px rgb(7, 141, 112) ;
+
+    &:hover {
+
+        background-color: rgb(7, 141, 112) ;
+        transform: scale(1.1);
+        transition-duration: 0.9s;
+        color: rgb(10, 26, 168);
+        box-shadow: 0 10px 15px rgb(17, 0, 109);
+    }
+}

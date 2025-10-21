@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZAPATOS IMPERIUM</title>
+
+  <!-- CONFIG: activar dark mode por CLASE para Tailwind (debe ir antes del CDN) -->
+  <script>
+    tailwind = window.tailwind || {};
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="static/stylesProductos.css"> 
+</head>
+<body class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors">
+
+  <!-- HEADER -->
+  <header id="navbar" class="fixed top-0 left-0 w-full bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-800 text-white p-5 flex justify-between items-center shadow-md z-40">
+    <h1 class="text-2xl font-bold">IMPERIUM</h1>
+    <nav class="hidden md:block">
+      <ul class="flex gap-6">
+        <li><a href="{{ url_for('about') }}" class="btn btn-outline-secondary">¡Inicio Empresas!</a></li>
+      </ul>
+    </nav>
+
+      <!-- Dark mode toggle: tiene spans (icon + texto) -->
+    <button id=""
+      class="ml-4 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg backdrop-blur-sm transition flex items-center gap-2">
+      <span id="theme-icon">👋</span>
+      <span id="theme-text"><a href="{{ url_for('logout') }}" class="logout-button">Salir</a></span>
+    </button>
+
+  </header>
+
+  <!-- Botón Carrito flotante -->
+  <div class="fixed bottom-6 left-6 z-50">
+    <button id="toggle-carrito" 
+            class="relative bg-cyan-400/90 text-black px-4 py-3 rounded-full shadow-lg hover:bg-cyan-300/90 transition backdrop-blur-sm">
+      🛒
+      <span id="carrito-badge" 
+            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+    </button>
+  </div>
+
+
+  <!-- PRODUCTOS -->
+  <section id="productos" class="py-32 px-6 md:px-20 bg-gray-50 dark:bg-gray-950">
+    <h3 class="text-3xl font-bold text-center mb-8 text-indigo-900 dark:text-indigo-300">Nuestros Productos</h3>
+
+    <!-- Filtros / Buscador -->
+    <div class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+      <input id="buscador" type="search" placeholder="Buscar por nombre..."
+        class="flex-1 border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-cyan-400 bg-white dark:bg-gray-800 dark:border-gray-700" />
+
+      <div class="flex flex-wrap gap-2">
+        <button data-cat="todos" class="filtro-btn active bg-indigo-600 text-white px-4 py-2 rounded hover:opacity-90">Todos</button>
+        <button data-cat="Deportivos" class="filtro-btn bg-white dark:bg-gray-800 dark:text-gray-100 border dark:border-gray-700 px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Deportivos</button>
+        <button data-cat="Formales" class="filtro-btn bg-white dark:bg-gray-800 dark:text-gray-100 border dark:border-gray-700 px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Formales</button>
+        <button data-cat="Casuales" class="filtro-btn bg-white dark:bg-gray-800 dark:text-gray-100 border dark:border-gray-700 px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">Casuales</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+      <!-- Productos dinámicos con JS -->
+      {% if products_list %}
+        {% for product in products_list %}
+          <div class="product-card group bg-white dark:bg-gray-800 shadow-lg rounded-xl p-5 relative overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div class="overflow-hidden rounded-lg mb-4">
+              <img src="img/zapato1.jpeg" alt="qty_{{ product.name }}"
+                class="w-full h-60 object-cover rounded transition-transform duration-300 group-hover:scale-105" loading="lazy">
+            </div>
+            <h4 class="text-xl font-semibold mb-1">{{ product.name }}</h4>
+            <p class="text-gray-600 dark:text-gray-300 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur beatae fuga ut veniam repellat illum asperiores, in quaerat, accusamus praesentium illo, esse dolore non magnam vel cupiditate delectus a deserunt.</p>
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-bold text-cyan-600 dark:text-cyan-400">${{ product.price | round(2) }}</span>
+               <a href="https://api.whatsapp.com/send?phone=573204452918&amp;text= desde mi portafolio"
+                    target="_blank">
+              <button
+                class="add-to-cart bg-indigo-900 text-white px-4 py-2 rounded hover:bg-cyan-400 hover:text-black transition-transform active:scale-95"
+                data-id="qty_{{ product.id }}" data-nombre="qty_{{ product.name }}" data-precio="qty_{{ product.price }}" data-imagen="zapato1.jpeg">
+                Comprar
+
+               <!-- <button class="ver-detalles bg-cyan-500 text-white px-3 py-1 rounded mt-2 hover:bg-cyan-400 transition"
+                  data-id="qty_{{ product.id }}">
+                  Ver detalles -->
+                </button> 
+                </a>
+            </div>
+            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Categoría: Ninguna</div>
+          </div>
+          {% endfor %}
+      {% else %}
+        <p>No hay productos disponibles en este momento.</p>
+      {% endif %}
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-800 text-white text-center py-6">
+    <p>&copy; 2025 IMPERIUM. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+  <!-- Carrito Drawer -->
+  <div id="carrito-panel" class="fixed top-0 right-0 w-96 h-full bg-white dark:bg-gray-800 shadow-2xl transform translate-x-full transition-transform duration-500 ease-out z-50 flex flex-col backdrop-blur-lg">
+    <div class="p-4 border-b dark:border-gray-700 flex justify-between items-center">
+      <h3 class="text-2xl font-extrabold text-indigo-900 dark:text-indigo-300">🛍️ Tu Carrito</h3>
+      <button id="cerrar-carrito" class="text-gray-500 hover:text-red-500 text-2xl font-bold">&times;</button>
+    </div>
+    <div id="carrito-items" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+    <div id="carrito-total" class="p-4 border-t dark:border-gray-700 text-lg font-bold text-indigo-900 dark:text-indigo-300"></div>
+  </div>
+
+  <!-- ✅ Modal Checkout -->
+  <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+      <button id="cerrar-modal" class="absolute top-2 right-2 text-gray-500 hover:text-white text-2xl">&times;</button>
+      <h2 class="text-2xl font-bold text-center mb-4 text-cyan-700 dark:text-cyan-300">Finalizar Compra 🛒</h2>
+      <div id="checkout-resumen" class="mb-4 text-gray-700 dark:text-gray-200"></div>
+      <p id="checkout-total" class="font-bold text-lg text-center mb-4 text-indigo-900 dark:text-indigo-300"></p>
+      <form id="checkout-form" class="space-y-3">
+        <input type="text" id="nombre" placeholder="Nombre completo" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <input type="email" id="email" placeholder="Correo electrónico" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <input type="text" id="direccion" placeholder="Dirección de envío" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <input type="text" id="tarjeta" placeholder="Número de tarjeta" maxlength="19" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <div class="flex gap-3">
+          <input type="text" id="fecha" placeholder="MM/AA" maxlength="5" class="w-1/2 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+          <input type="text" id="cvc" placeholder="CVC" maxlength="3" class="w-1/2 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        </div>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-500 transition">
+          Confirmar Pago
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✅ Modal Detalles Producto -->
+  <div id="detalle-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+      <button id="cerrar-detalle" class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+      
+      <img id="detalle-imagen" src="" alt="Producto" class="w-full h-64 object-cover rounded mb-4">
+      <h2 id="detalle-nombre" class="text-2xl font-bold mb-2"></h2>
+      <p id="detalle-descripcion" class="text-gray-600 dark:text-gray-300 mb-4"></p>
+      <p id="detalle-precio" class="text-lg font-bold text-cyan-600 dark:text-cyan-400 mb-4"></p>
+      
+      <button id="detalle-agregar" class="w-full bg-indigo-900 text-white px-4 py-2 rounded hover:bg-cyan-400 hover:text-black transition">
+        Agregar al carrito
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ======================
+   Datos y estado
+====================== */
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let filtroCategoria = "todos";
+let terminoBusqueda = "";
+
+// Catálogo con categorías
+const productos = [
+  { id: 1, nombre: "JORDAN RETRO 5", precio: 89900, imagen: "img/zapato1.jpeg", descripcion: "Comodidad y estilo para tu día a día.", categoria: "Deportivos", etiqueta: "Nuevo" },
+  { id: 2, nombre: "Zapato Formal Clásico", precio: 129900, imagen: "img/zapato2.jpg", descripcion: "Ideal para la oficina o eventos especiales.", categoria: "Formales" },
+  { id: 3, nombre: "Zapato Casual Urbano", precio: 99900, imagen: "img/zapato3.jpeg", descripcion: "Perfecto para salidas informales y cómodas.", categoria: "Casuales", etiqueta: "Oferta" },
+  { id: 4, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato4.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 5, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato5.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos", etiqueta: "Oferta" },
+  { id: 6, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato6.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 7, nombre: "JORDAN 1", precio: 99900, imagen: "img/zapato7.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos", etiqueta: "Oferta" },
+  { id: 8, nombre: "Zapato Formal Clásico", precio: 129900, imagen: "img/zapato8.jpeg", descripcion: "Ideal para la oficina o eventos especiales.", categoria: "Formales" },
+  { id: 9, nombre: "Zapato Casual Urbano", precio: 99900, imagen: "img/zapato9.jpg", descripcion: "Perfecto para salidas informales y cómodas.", categoria: "Casuales", etiqueta: "Oferta" },
+  { id: 10, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato10.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 11, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato11.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 12, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato12.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 13, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato13.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 14, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato14.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 15, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato15.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 16, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato16.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+  { id: 17, nombre: "JORDAN RETRO 4", precio: 129900, imagen: "img/zapato17.jpg", descripcion: "Comodidad y estilo para tu día a día", categoria: "Deportivos" },
+];
+
+/* ======================
+   Helpers: Theme UI
+====================== */
+function updateThemeUI() {
+  const themeBtn = document.getElementById("toggle-theme");
+  if (!themeBtn) return;
+
+  let themeIcon = themeBtn.querySelector("#theme-icon");
+  let themeText = themeBtn.querySelector("#theme-text");
+
+  if (!themeIcon || !themeText) {
+    const original = themeBtn.textContent.trim() || "Modo oscuro";
+    themeBtn.innerHTML = `<span id="theme-icon">🌙</span><span id="theme-text">${original}</span>`;
+    themeIcon = themeBtn.querySelector("#theme-icon");
+    themeText = themeBtn.querySelector("#theme-text");
+  }
+
+  const darkActive = document.documentElement.classList.contains("dark") ||
+                     localStorage.getItem("theme") === "dark";
+
+  if (darkActive) {
+    themeIcon.textContent = "☀️";
+    themeText.textContent = "Modo claro";
+
+    // ✨ Ajustes visuales extra en modo oscuro
+    document.body.style.transition = "background-color 0.5s, color 0.5s";
+    document.body.style.backgroundColor = "#0f172a"; // azul grisáceo oscuro
+    document.body.style.color = "#f8fafc";           // texto claro
+  } else {
+    themeIcon.textContent = "🌙";
+    themeText.textContent = "Modo oscuro";
+
+    document.body.style.transition = "background-color 0.5s, color 0.5s";
+    document.body.style.backgroundColor = "#ffffff";
+    document.body.style.color = "#1f2937";           // gris oscuro
+  }
+}
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const isDark = root.classList.toggle("dark");
+
+  // ✨ animación suave al cambiar de tema
+  document.body.classList.add("transition-colors", "duration-500");
+
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  updateThemeUI();
+}
+
+
+/* ======================
+   Inicializar tema al cargar
+====================== */
+function initTheme() {
+  const saved = localStorage.getItem("theme");
+  const root = document.documentElement;
+
+  if (saved === "dark") {
+    root.classList.add("dark");
+  } else if (saved === "light") {
+    root.classList.remove("dark");
+  } else {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (prefersDark) root.classList.add("dark");
+    else root.classList.remove("dark");
+  }
+
+  // Esperar al render antes de actualizar botón
+  requestAnimationFrame(() => updateThemeUI());
+}
+
+/* ======================
+   Inicio: todo lo que ocurre cuando la página carga
+====================== */
+document.addEventListener("DOMContentLoaded", () => {
+  // Navbar sticky
+  const navbar = document.getElementById("navbar");
+  function actualizarNavbar() {
+    if (window.scrollY > 10) navbar.classList.add("scrolled");
+    else navbar.classList.remove("scrolled");
+  }
+  window.addEventListener("scroll", actualizarNavbar);
+  actualizarNavbar();
+
+  // Inicializar tema y botón
+  initTheme();
+  const themeBtn = document.getElementById("toggle-theme");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleTheme();
+    });
+  }
+
+  // Render inicial
+  renderProductos();
+  renderCarrito();
+
+  // Drawer del carrito
+  const carritoPanel = document.getElementById("carrito-panel");
+  const toggleCarrito = document.getElementById("toggle-carrito");
+  const overlay = document.getElementById("overlay");
+  const cerrarCarrito = document.getElementById("cerrar-carrito");
+
+  if (toggleCarrito) {
+    toggleCarrito.addEventListener("click", () => {
+      carritoPanel.classList.replace("translate-x-full", "translate-x-0");
+      carritoPanel.classList.add("animate-bounce-slide");
+      overlay.classList.remove("hidden");
+      setTimeout(() => carritoPanel.classList.remove("animate-bounce-slide"), 650);
+    });
+  }
+
+  [cerrarCarrito, overlay].forEach(el => {
+    if (el) el.addEventListener("click", () => {
+      carritoPanel.classList.replace("translate-x-0", "translate-x-full");
+      overlay.classList.add("hidden");
+    });
+  });
+
+  // Form de contacto -> usar toast
+  const formContacto = document.getElementById("contact-form");
+  if (formContacto) {
+    formContacto.addEventListener("submit", e => {
+      e.preventDefault();
+      mostrarToast("✅ Mensaje enviado con éxito", "success");
+      e.target.reset();
+    });
+  }
+
+  // Buscador
+  const buscador = document.getElementById("buscador");
+  if (buscador) {
+    buscador.addEventListener("input", (e) => {
+      terminoBusqueda = e.target.value.toLowerCase();
+      renderProductos();
+    });
+  }
+
+  // Filtros por categoría
+  document.querySelectorAll(".filtro-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active", "bg-indigo-600", "text-white"));
+      btn.classList.add("active", "bg-indigo-600", "text-white");
+      filtroCategoria = btn.dataset.cat;
+      renderProductos();
+    });
+  });
+});
+
+/* ======================
+   Render Productos
+====================== */
+function renderProductos(){
+  console.log("dasd")
+}
+
+function renderProductos2() {
+  const contenedor = document.querySelector("#productos .grid");
+  if (!contenedor) return;
+  contenedor.innerHTML = "";
+
+  const lista = productos.filter(p => {
+    const coincideCategoria = (filtroCategoria === "todos") || (p.categoria === filtroCategoria);
+    const coincideTexto = p.nombre.toLowerCase().includes(terminoBusqueda);
+    return coincideCategoria && coincideTexto;
+  });
+
+  if (lista.length === 0) {
+    contenedor.innerHTML = `
+      <div class="col-span-full text-center text-gray-500 dark:text-gray-400">
+        No encontramos productos para tu búsqueda.
+      </div>`;
+    return;
+  }
+
+
+  lista.forEach(p => {
+    let etiquetaHTML = p.etiqueta ? `<span class="product-label ${p.etiqueta.toLowerCase()}">${p.etiqueta}</span>` : "";
+
+    const card = document.createElement("div");
+    card.className = "product-card group bg-white dark:bg-gray-800 shadow-lg rounded-xl p-5 relative overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl";
+    card.innerHTML = `
+      ${etiquetaHTML}
+      <div class="overflow-hidden rounded-lg mb-4">
+        <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-60 object-cover rounded transition-transform duration-300 group-hover:scale-105" loading="lazy">
+      </div>
+      <h4 class="text-xl font-semibold mb-1">${p.nombre}</h4>
+      <p class="text-gray-600 dark:text-gray-300 mb-3">${p.descripcion}</p>
+      <div class="flex items-center justify-between">
+        <span class="text-lg font-bold text-cyan-600 dark:text-cyan-400">$${p.precio.toLocaleString()}</span>
+        <button class="add-to-cart bg-indigo-900 text-white px-4 py-2 rounded hover:bg-cyan-400 hover:text-black transition-transform active:scale-95"
+                data-id="${p.id}" data-nombre="${p.nombre}" data-precio="${p.precio}" data-imagen="${p.imagen}">
+          Agregar 
+          <button class="ver-detalles bg-cyan-500 text-white px-3 py-1 rounded mt-2 hover:bg-cyan-400 transition" 
+          data-id="${p.id}">
+          Ver detalles
+        </button>
+      </div>
+      <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">Categoría: ${p.categoria}</div>
+    `;
+    contenedor.appendChild(card);
+  });
+
+  // Listeners de "Agregar"
+  document.querySelectorAll(".add-to-cart").forEach(boton => {
+    boton.addEventListener("click", () => {
+      const id = boton.dataset.id;
+      const nombre = boton.dataset.nombre;
+      const precio = parseInt(boton.dataset.precio);
+      const imagen = boton.dataset.imagen;
+
+      // animación sutil del botón
+      boton.classList.add("scale-95");
+      setTimeout(() => boton.classList.remove("scale-95"), 120);
+
+      const productoExistente = carrito.find(p => p.id == id);
+      if (productoExistente) {
+        productoExistente.cantidad += 1;
+      } else {
+        carrito.push({ id, nombre, precio, imagen, cantidad: 1 });
+      }
+      guardarCarrito();
+      renderCarrito();
+      mostrarToast(`${nombre} agregado al carrito`, "success");
+    });
+    // Listeners de "Ver detalles"
+    document.querySelectorAll(".ver-detalles").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-id");
+        const producto = productos.find(p => p.id == id);
+        if (producto) abrirDetalle(producto);
+      });
+    });
+
+  });
+}
+// ======================
+// Modal de detalles
+// ======================
+function abrirDetalle(producto) {
+  document.getElementById("detalle-imagen").src = producto.imagen;
+  document.getElementById("detalle-nombre").textContent = producto.nombre;
+  document.getElementById("detalle-descripcion").textContent = producto.descripcion;
+  document.getElementById("detalle-precio").textContent = `$${producto.precio.toLocaleString()}`;
+  
+  // Guardamos temporalmente el producto seleccionado
+  document.getElementById("detalle-agregar").setAttribute("data-id", producto.id);
+  
+  const modal = document.getElementById("detalle-modal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function cerrarDetalle() {
+  const modal = document.getElementById("detalle-modal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+// Cerrar modal
+document.getElementById("cerrar-detalle").addEventListener("click", cerrarDetalle);
+document.getElementById("detalle-modal").addEventListener("click", (e) => {
+  if (e.target.id === "detalle-modal") cerrarDetalle();
+});
+
+// Agregar desde modal
+document.getElementById("detalle-agregar").addEventListener("click", (e) => {
+  const id = e.target.getAttribute("data-id");
+  const producto = productos.find(p => p.id == id);
+  
+  if (producto) {
+    const existente = carrito.find(p => p.id == id);
+    if (existente) existente.cantidad++;
+    else carrito.push({ ...producto, cantidad: 1 });
+    
+    guardarCarrito();
+    renderCarrito();
+    mostrarToast(`${producto.nombre} agregado al carrito`, "success");
+  }
+  cerrarDetalle();
+});
+
+/* ======================
+   Render Carrito
+====================== */
+function renderCarrito() {
+  const carritoItems = document.getElementById("carrito-items");
+  const carritoTotal = document.getElementById("carrito-total");
+  const carritoBadge = document.getElementById("carrito-badge");
+
+  if (!carritoItems || !carritoTotal || !carritoBadge) return;
+
+  carritoItems.innerHTML = "";
+  let total = 0;
+  let totalItems = 0;
+
+  carrito.forEach(producto => {
+    total += producto.precio * producto.cantidad;
+    totalItems += producto.cantidad;
+    const subtotal = producto.precio * producto.cantidad;
+
+    const item = document.createElement("div");
+    item.className = "flex justify-between items-center bg-gray-100 dark:bg-gray-700 p-3 rounded";
+    item.innerHTML = `
+      <div class="flex items-center gap-3">
+        <img src="${producto.imagen}" alt="${producto.nombre}" class="w-12 h-12 object-cover rounded">
+        <div>
+          <p class="font-semibold">${producto.nombre}</p>
+          <p class="text-sm opacity-80">$${producto.precio.toLocaleString()} x ${producto.cantidad}</p>
+          <p class="text-sm font-medium text-cyan-600 dark:text-cyan-400">Subtotal: $${subtotal.toLocaleString()}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="disminuir-btn bg-gray-300 dark:bg-gray-600 px-2 rounded" data-id="${producto.id}">➖</button>
+        <span class="font-bold text-lg bg-white dark:bg-gray-900 border dark:border-gray-700 px-2 py-0.5 rounded">${producto.cantidad}</span>
+        <button class="aumentar-btn bg-gray-300 dark:bg-gray-600 px-2 rounded" data-id="${producto.id}">➕</button>
+        <button class="bg-red-500 text-white px-2 py-1 text-sm rounded eliminar-btn hover:bg-red-400" data-id="${producto.id}">✕</button>
+      </div>
+    `;
+    carritoItems.appendChild(item);
+  });
+
+  carritoTotal.innerHTML = `
+    <span class="text-indigo-900 dark:text-indigo-300 font-extrabold text-xl block text-center">TOTAL: $${total.toLocaleString()}</span>
+    <div id="carrito-botones" class="flex justify-between gap-2 mt-4">
+      <button id="vaciar-carrito" class="w-1/2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-400 transition">Vaciar</button>
+      <button id="finalizar-compra" class="w-1/2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500 transition">Comprar</button>
+    </div>
+  `;
+  carritoBadge.textContent = totalItems;
+  carritoBadge.style.display = totalItems > 0 ? "flex" : "none";
+}
+
+/* ======================
+   Delegación de eventos del carrito
+====================== */
+document.addEventListener("click", (e) => {
+  // ➕ aumentar
+  if (e.target.classList.contains("aumentar-btn")) {
+    const id = e.target.dataset.id;
+    const producto = carrito.find(p => p.id == id);
+    if (producto) producto.cantidad++;
+    guardarCarrito();
+    renderCarrito();
+  }
+
+  // ➖ disminuir
+  if (e.target.classList.contains("disminuir-btn")) {
+    const id = e.target.dataset.id;
+    const producto = carrito.find(p => p.id == id);
+    if (producto && producto.cantidad > 1) producto.cantidad--;
+    else carrito = carrito.filter(p => p.id != id);
+    guardarCarrito();
+    renderCarrito();
+  }
+
+  // ❌ eliminar
+  if (e.target.classList.contains("eliminar-btn")) {
+    const id = e.target.dataset.id;
+    carrito = carrito.filter(p => p.id != id);
+    guardarCarrito();
+    renderCarrito();
+  }
+
+  // Vaciar carrito
+  if (e.target.id === "vaciar-carrito") {
+    carrito = [];
+    guardarCarrito();
+    renderCarrito();
+  }
+
+  // Finalizar compra
+  if (e.target.id === "finalizar-compra") {
+    const modal = document.getElementById("checkout-modal");
+    if (modal) modal.classList.remove("hidden");
+  }
+});
+
+/* ======================
+   Guardar carrito
+====================== */
+function guardarCarrito() {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+/* ======================
+   Checkout: formulario
+====================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("checkout-modal");
+  const cerrarModal = document.getElementById("cerrar-modal");
+  if (cerrarModal) {
+    cerrarModal.addEventListener("click", () => modal.classList.add("hidden"));
+  }
+
+  const form = document.getElementById("checkout-form");
+  if (form) {
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const direccion = document.getElementById("direccion").value.trim();
+      const tarjeta = document.getElementById("tarjeta").value.trim();
+      const fecha = document.getElementById("fecha").value.trim();
+      const cvc = document.getElementById("cvc").value.trim();
+
+      if (!nombre || !email || !direccion || !tarjeta || !fecha || !cvc) {
+        mostrarToast("Por favor completa todos los campos", "error");
+        return;
+      }
+
+      mostrarToast("Procesando pago...", "info");
+      setTimeout(() => {
+        mostrarToast("✅ Pago procesado con éxito", "success");
+        modal.classList.add("hidden");
+        form.reset();
+        // limpiar carrito al pagar
+        carrito = [];
+        guardarCarrito();
+        renderCarrito();
+      }, 1200);
+    });
+  }
+});
+
+/* ======================
+   Toasts
+====================== */
+function mostrarToast(mensaje, tipo = "success") {
+  const colores = { success: "bg-green-600", error: "bg-red-600", info: "bg-blue-600" };
+  const iconos = { success: "✅", error: "❌", info: "ℹ️" };
+
+  const toast = document.createElement("div");
+  toast.className = `fixed bottom-5 right-5 ${colores[tipo]} text-white px-4 py-2 rounded shadow-lg opacity-0 translate-x-10 transition-all duration-500 z-50 flex items-center gap-2`;
+  toast.innerHTML = `<span>${iconos[tipo]}</span> <span>${mensaje}</span>`;
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.remove("opacity-0", "translate-x-10");
+    toast.classList.add("opacity-100", "translate-x-0");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("opacity-100", "translate-x-0");
+    toast.classList.add("opacity-0", "translate-x-10");
+    setTimeout(() => toast.remove(), 500);
+  }, 2800);
+}
+
+/* ======================
+   Exponer toggleTheme 
+====================== */
+window.toggleTheme = toggleTheme;
+
+  </script>
+</body>
+</html>
