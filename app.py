@@ -95,6 +95,10 @@ def image(filename):
 def uri_path(uri_path):
     return render_template(uri_path)
 
+# Para traer cualquier archivo
+@app.route('/payment', methods=['GET', 'POST'])
+def payment():
+    return render_template('payment.html', username=request.form.get('username'), email=request.form.get('email'), direction=request.form.get('direction'))
     
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

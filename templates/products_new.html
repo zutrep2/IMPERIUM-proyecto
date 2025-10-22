@@ -78,12 +78,12 @@
             <p class="text-gray-600 dark:text-gray-300 mb-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur beatae fuga ut veniam repellat illum asperiores, in quaerat, accusamus praesentium illo, esse dolore non magnam vel cupiditate delectus a deserunt.</p>
             <div class="flex items-center justify-between">
               <span class="text-lg font-bold text-cyan-600 dark:text-cyan-400">${{ product.price | round(2) }}</span>
-               <a href="https://api.whatsapp.com/send?phone=573204452918&amp;text= desde mi portafolio"
-                    target="_blank">
+              <!-- <a href="https://api.whatsapp.com/send?phone=573204452918&amp;text= desde mi portafolio"
+                    target="_blank">-->
               <button
                 class="add-to-cart bg-indigo-900 text-white px-4 py-2 rounded hover:bg-cyan-400 hover:text-black transition-transform active:scale-95"
-                data-id="qty_{{ product.id }}" data-nombre="qty_{{ product.name }}" data-precio="qty_{{ product.price }}" data-imagen="zapato1.jpeg">
-                Comprar
+                data-id="{{ product.id }}" data-nombre="{{ product.name }}" data-precio="{{ product.price }}" data-imagen="img/zapato1.jpeg">
+                add
 
                <!-- <button class="ver-detalles bg-cyan-500 text-white px-3 py-1 rounded mt-2 hover:bg-cyan-400 transition"
                   data-id="qty_{{ product.id }}">
@@ -121,16 +121,16 @@
 
   <!-- ✅ Modal Checkout -->
   <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+    <div style="top: 10%; left: 38%;" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-lg relative">
       <button id="cerrar-modal" class="absolute top-2 right-2 text-gray-500 hover:text-white text-2xl">&times;</button>
       <h2 class="text-2xl font-bold text-center mb-4 text-cyan-700 dark:text-cyan-300">Finalizar Compra 🛒</h2>
       <div id="checkout-resumen" class="mb-4 text-gray-700 dark:text-gray-200"></div>
       <p id="checkout-total" class="font-bold text-lg text-center mb-4 text-indigo-900 dark:text-indigo-300"></p>
-      <form id="checkout-form" class="space-y-3">
-        <input type="text" id="nombre" placeholder="Nombre completo" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
-        <input type="email" id="email" placeholder="Correo electrónico" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
-        <input type="text" id="direccion" placeholder="Dirección de envío" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
-        <input type="text" id="tarjeta" placeholder="Número de tarjeta" maxlength="19" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+      <form id="checkout-form" class="space-y-3" action="/payment" method="POST">
+        <input name="username"  type="text" id="username" placeholder="Nombre completo" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <input name="email"  type="email" id="email" placeholder="Correo electrónico" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <input name="direction"  type="text" id="direction" placeholder="Dirección de envío" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
+        <input name="cardnumber"  type="text" id="tarjeta" placeholder="Número de tarjeta" maxlength="19" class="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
         <div class="flex gap-3">
           <input type="text" id="fecha" placeholder="MM/AA" maxlength="5" class="w-1/2 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
           <input type="text" id="cvc" placeholder="CVC" maxlength="3" class="w-1/2 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-900" required>
@@ -341,7 +341,38 @@ document.addEventListener("DOMContentLoaded", () => {
    Render Productos
 ====================== */
 function renderProductos(){
-  console.log("dasd")
+    // Listeners de "Agregar"
+  document.querySelectorAll(".add-to-cart").forEach(boton => {
+    boton.addEventListener("click", () => {
+      const id = boton.dataset.id;
+      const nombre = boton.dataset.nombre;
+      const precio = parseInt(boton.dataset.precio);
+      const imagen = boton.dataset.imagen;
+
+      // animación sutil del botón
+      boton.classList.add("scale-95");
+      setTimeout(() => boton.classList.remove("scale-95"), 120);
+
+      const productoExistente = carrito.find(p => p.id == id);
+      if (productoExistente) {
+        productoExistente.cantidad += 1;
+      } else {
+        carrito.push({ id, nombre, precio, imagen, cantidad: 1 });
+      }
+      guardarCarrito();
+      renderCarrito();
+      mostrarToast(`${nombre} agregado al carrito`, "success");
+    });
+    // Listeners de "Ver detalles"
+    document.querySelectorAll(".ver-detalles").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-id");
+        const producto = productos.find(p => p.id == id);
+        if (producto) abrirDetalle(producto);
+      });
+    });
+
+  });
 }
 
 function renderProductos2() {
@@ -496,7 +527,7 @@ function renderCarrito() {
         <img src="${producto.imagen}" alt="${producto.nombre}" class="w-12 h-12 object-cover rounded">
         <div>
           <p class="font-semibold">${producto.nombre}</p>
-          <p class="text-sm opacity-80">$${producto.precio.toLocaleString()} x ${producto.cantidad}</p>
+          <p class="text-sm opacity-80">$${producto.precio} x ${producto.cantidad}</p>
           <p class="text-sm font-medium text-cyan-600 dark:text-cyan-400">Subtotal: $${subtotal.toLocaleString()}</p>
         </div>
       </div>
@@ -586,7 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("checkout-form");
   if (form) {
     form.addEventListener("submit", function(e) {
-      e.preventDefault();
+      //e.preventDefault();
       const nombre = document.getElementById("nombre").value.trim();
       const email = document.getElementById("email").value.trim();
       const direccion = document.getElementById("direccion").value.trim();
